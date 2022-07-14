@@ -28,29 +28,14 @@ Project File Date:  06/27/2022
 *** Using Compiler 'V6.16', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Rebuild target 'Target 1'
 assembling startup_stm32f10x_md.s...
-trab.c(199): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-                GPIOA->ODR &= ~ (1<<LCD_RS); /* RS = 0 for command */
-                           ~~ ^~~~~~~~~~~~~
-trab.c(222): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-                GPIOA->ODR &= ~(1<<LCD_EN); /* LCD_EN = 0 */
-                           ~~ ^~~~~~~~~~~~
-trab.c(261): warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
-                GPIOA->BSRR = ((aux&0x0008)<<8) | ((aux&0x0004)<<3) |   ((aux&0x0002)<<5) | ((aux&0x0001)<<8);
-                            ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
-trab.c(264): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-                GPIOA->ODR &= ~ (1<<LCD_EN); /* EN = 0 for H-to-L pulse */
-                           ~~ ^~~~~~~~~~~~~
-trab.c(269): warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
-                GPIOA->BSRR = ((aux&0x0008)<<8) | ((aux&0x0004)<<3) | ((aux&0x0002)<<5) | ((aux&0x0001)<<8);
-                            ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
-trab.c(272): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-                GPIOA->ODR &= ~(1<<LCD_EN); /* EN = 0 for H-to-L pulse */
-                           ~~ ^~~~~~~~~~~~
-trab.c(274): warning: no newline at end of file [-Wnewline-eof]
-}
- ^
-7 warnings generated.
-compiling trab.c...
+RTE/Device/STM32F103C8/system_stm32f10x.c(167): warning: no previous extern declaration for non-static variable 'AHBPrescTable' [-Wmissing-variable-declarations]
+__I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+            ^
+RTE/Device/STM32F103C8/system_stm32f10x.c(167): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+__I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+    ^
+1 warning generated.
+compiling system_stm32f10x.c...
 C:/Users/Pedro - PC/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.3.0/RTE_Driver/GPIO_STM32F10x.c(10): warning: In file included from...
 C:/Users/Pedro - PC/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.3.0/RTE_Driver/GPIO_STM32F10x.h(230): warning: implicit conversion loses integer precision: 'volatile uint32_t' (aka 'volatile unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
   return (GPIOx->IDR);
@@ -66,17 +51,41 @@ C:/Users/Pedro - PC/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.3.0/RTE_Driver/
        ~~ ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
 4 warnings generated.
 compiling GPIO_STM32F10x.c...
-RTE/Device/STM32F103C8/system_stm32f10x.c(167): warning: no previous extern declaration for non-static variable 'AHBPrescTable' [-Wmissing-variable-declarations]
-__I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
-            ^
-RTE/Device/STM32F103C8/system_stm32f10x.c(167): note: declare 'static' if the variable is not intended to be used outside of this translation unit
-__I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
-    ^
-1 warning generated.
-compiling system_stm32f10x.c...
+trab.c(100): warning: implicit conversion loses integer precision: 'volatile uint32_t' (aka 'volatile unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+                teclas_GPIOA = GPIOA -> IDR;
+                             ~ ~~~~~~~~~^~~
+trab.c(124): warning: implicit conversion loses integer precision: 'volatile uint32_t' (aka 'volatile unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+                teclas_GPIOB = GPIOB -> IDR;
+                             ~ ~~~~~~~~~^~~
+trab.c(186): warning: implicit conversion loses integer precision: 'volatile uint32_t' (aka 'volatile unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+                teclas_GPIOC = GPIOC -> IDR;
+                             ~ ~~~~~~~~~^~~
+trab.c(244): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+                GPIOA->ODR &= ~ (1<<LCD_RS); /* RS = 0 for command */
+                           ~~ ^~~~~~~~~~~~~
+trab.c(267): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+                GPIOA->ODR &= ~(1<<LCD_EN); /* LCD_EN = 0 */
+                           ~~ ^~~~~~~~~~~~
+trab.c(306): warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+                GPIOA->BSRR = ((aux&0x0008)<<8) | ((aux&0x0004)<<3) |   ((aux&0x0002)<<5) | ((aux&0x0001)<<8);
+                            ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+trab.c(309): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+                GPIOA->ODR &= ~ (1<<LCD_EN); /* EN = 0 for H-to-L pulse */
+                           ~~ ^~~~~~~~~~~~~
+trab.c(314): warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+                GPIOA->BSRR = ((aux&0x0008)<<8) | ((aux&0x0004)<<3) | ((aux&0x0002)<<5) | ((aux&0x0001)<<8);
+                            ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+trab.c(317): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+                GPIOA->ODR &= ~(1<<LCD_EN); /* EN = 0 for H-to-L pulse */
+                           ~~ ^~~~~~~~~~~~
+trab.c(319): warning: no newline at end of file [-Wnewline-eof]
+}
+ ^
+10 warnings generated.
+compiling trab.c...
 linking...
-Program Size: Code=1368 RO-data=252 RW-data=0 ZI-data=1632  
-".\Objects\trabalho.axf" - 0 Error(s), 12 Warning(s).
+Program Size: Code=1552 RO-data=252 RW-data=0 ZI-data=1632  
+".\Objects\trabalho.axf" - 0 Error(s), 15 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -109,11 +118,11 @@ Package Vendor: Keil
       Source file:   RTE_Driver\GPIO_STM32F10x.c
 
    * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\system_stm32f10x.c
-      Include file:  RTE_Driver\Config\RTE_Device.h
-      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
       Source file:   Device\Source\ARM\startup_stm32f10x_md.s
-Build Time Elapsed:  00:00:01
+      Source file:   Device\Source\ARM\STM32F1xx_OPT.s
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Source file:   Device\Source\system_stm32f10x.c
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

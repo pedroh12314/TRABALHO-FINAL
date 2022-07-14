@@ -1,47 +1,42 @@
 # include <stm32f10x.h>
 
 
-// Setup funcoes
-
-
+// ESCOPO DE FUNCOES
 void buzzer( uint16_t );
 void lcd_init ( void ); // Iniciar o display corretamente
 void lcd_command ( unsigned char cmd ); // Enviar comandos
 void lcd_data ( unsigned char data ); // Envia dados ( caractere ASCII )
-void lcd_print ( char * str ); // Envia strings
+void lcd_print ( char * str ); // Envia strings para o display
 void lcd_putValue ( unsigned char value ); // Usada internamente
 void delay_us ( uint16_t t ); // Atraso de micro segundos
 void delay_ms ( uint16_t t ); // Atraso de mili segundos
 void atualiza_ldc( void );
-	
-
-// Setup Chaves
 
 // BUZZER
 # define bz 0 // PB0
 
 // ACORDE EM USO
-#define SW1 0x0000EFF0
-#define SW2 0x0000DFF0
+#define SW1 0xEF38
+#define SW2 0xDF38
 
 // CICLO DE TRABALHO
-#define SW3 0x0000BFF0
-#define SW4 0x00007FF0
+#define SW3 0xBF38
+#define SW4 0x7F38
 
-// TONS
-#define SW5 0x0000FFD0
-#define SW6 0x0000FFE0
-//#define SW7 0x0000FFF0
-//#define SW8 0x00007FF8
-//#define SW9 0x0000EFF8
-#define SW10 0x0000FEF0
-#define SW11 0x0000FDF0
-#define SW12 0x0000F7F0
-#define SW13 0x0000FBF0
-//#define SW14 0x0000EFF0
-//#define SW15 0x0000DFF0
-//#define SW16 0x0000BFF8
-//#define SW17 0x00007FF8
+// TECLAS de tons
+#define SW5 0xFF18
+#define SW6 0xFF28
+#define SW7 0xFF30
+#define SW8 0x0090
+#define SW9 0x0088
+#define SW10 0xFE38
+#define SW11 0xFD38
+#define SW12 0xFB38
+#define SW13 0xF738
+#define SW14 0x0018
+#define SW15 0x6000
+#define SW16 0xA000
+#define SW17 0xC000
 
 // LCD
 #define LCD_RS 15 // PA15
@@ -50,119 +45,74 @@ void atualiza_ldc( void );
 #define LCD5 6 // PA6
 #define LCD6 5 // PA5
 #define LCD7 11 // PA11	
+
+
+
 	
 int main ()
 {
+	// Desabilita interface JTAG
 	AFIO -> MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE ;
-	// Setup Buzzer
+	
+	// Config iniciais Buzzer
 	RCC -> APB2ENR |= 0xFC ; /* enable GPIO clocks */
 	RCC -> APB1ENR |= (1 <<1); /* enable TIM3 clock */
-	GPIOB -> CRL = 0x4444444B ; // config buzzer as alt . func .
-	GPIOB -> CRH = 0x44444444 ; // config switches as inputs
 	TIM3 -> CCR3 = 12;
 	TIM3 -> CCER &= ~(1 <<8); // disable TIM3
 	TIM3 -> CCMR2 = 0x0030 ; /* toggle channel 3 */
-	TIM3 -> PSC = 7200 -1;
-	// Setup LCD
-	GPIOA -> CRL = 0x43344444 ; // LCD pins as outputs
-  GPIOA -> CRH = 0x34433443 ; // and other pins as inputs
+	TIM3 -> PSC = 7200 -1;	
+	
+	// Config portas GPIO
+	GPIOA -> CRL = 0x43344333 ;
+  GPIOA -> CRH = 0x33333443 ;
+	GPIOB -> CRL = 0x4444442B ;
+  GPIOB -> CRH = 0x44444444 ;
+	GPIOC -> CRL = 0x44444444 ;
+  GPIOC -> CRH = 0x44444444 ;
+	 
+		// 4 INPUT digital
+		// 3 OUTPUT digital
+		
+		// 2 INPUT analog - ta certo?
+		// 1 OUTPUT analog
 	
 	// Inicia LCD 
 	lcd_init ();
 	delay_ms (100);
+	lcd_command (0x01);
+	delay_ms (3);
 	
 	
 	// Variaveis Globais
 	int oitava = 1;
+	uint16_t teclas_GPIOA;
+	uint16_t teclas_GPIOB;
+	uint16_t teclas_GPIOC;
 	
-	
+	atualiza_ldc();
 	// LOOP
 	while (1)
 	{
-		switch ( GPIOB -> IDR )
+		
+		// Setup Portas LCD
+		//utilizar_teclas();
+		
+		teclas_GPIOA = GPIOA -> IDR;
+		teclas_GPIOA &= 0x0098;
+		switch ( teclas_GPIOA )
 			{
-				case SW1 :
-					oitava = 1;
+				case SW8 :	
+						buzzer(33);
 					break ;
-				
-				case SW2 :
-					oitava = 2;
-					break ;
-				
-				case SW3 :
-					//buzzer
-					buzzer(55);
-					break ;
-				
-				case SW4 :		
-					//buzzer
+
+			case SW9 :		
 					buzzer(33);
 					break ;
 				
-				case SW5 :		
-					//buzzer
+				case SW14 :		
 					buzzer(33);
-					break ;
+					break ;	
 				
-				case SW6 :		
-					//buzzer
-					buzzer(33);
-					break ;
-				
-				//case SW7 :		
-					//buzzer
-					//buzzer(33);
-					//break ;
-				
-				//case SW8 :		
-					//buzzer
-					//buzzer(33);
-					//break ;
-				
-				//case SW9 :		
-					//buzzer
-					//buzzer(33);
-					//break ;				
-				
-				case SW10 :		
-					//buzzer
-					buzzer(33);
-					break ;		
-				
-				case SW11 :		
-					//buzzer
-					buzzer(33);
-					break ;		
-				
-				case SW12 :		
-					//buzzer
-					buzzer(33);
-					break ;
-				
-				case SW13 :		
-					//buzzer
-					buzzer(33);
-					break ;
-				
-				//case SW14 :		
-					//buzzer
-					//buzzer(33);
-					//break ;
-				
-				//case SW15 :		
-					//buzzer
-					//buzzer(33);
-					//break ;
-				
-			//	case SW16 :		
-					//buzzer
-				//	buzzer(33);
-				//	break ;
-				
-			//	case SW17 :		
-					//buzzer
-				//	buzzer(33);
-				//	break ;				
 				default :
 					TIM3 -> CCER =0x0000 ; // desenable sound
 					TIM3 -> CR1 = 0;
@@ -171,26 +121,121 @@ int main ()
 
 			}
 			
+		teclas_GPIOB = GPIOB -> IDR;
+		teclas_GPIOB &=0xFF38;
+		switch ( teclas_GPIOB )
+			{
+				case SW1 :
+					oitava = 1;
+					// LCD
+					//atualiza_ldc();
+					break ;
+				
+				case SW2 :
+					oitava = 2;
+					// LCD
+					//atualiza_ldc();
+					break ;
+				
+				case SW3 :
+					buzzer(55);
+					break ;
+				
+				case SW4 :		
+					buzzer(33);
+					break ;
+				
+				case SW5 :		
+					buzzer(33);
+					break ;
+				
+				case SW6 :		
+					buzzer(33);
+					break ;
+				
+				case SW7 :		
+										TIM3 -> CCER =0x0000 ; // desenable sound
+					TIM3 -> CR1 = 0;
+					GPIOA -> ODR = 0x0000;
+					break ;
+				
+				case SW10 :		
+					buzzer(33);
+					break ;		
+				
+				case SW11 :		
+					buzzer(33);
+					break ;		
+				
+				case SW12 :		
+					buzzer(33);
+					break ;
+				
+				case SW13 :		
+					buzzer(33);
+					break ;
+								
+				default :
+					TIM3 -> CCER =0x0000 ; // desenable sound
+					TIM3 -> CR1 = 0;
+					GPIOA -> ODR = 0x0000;
+					break ;
 
-			atualiza_ldc();
+			}
+			
+		teclas_GPIOC = GPIOC -> IDR;
+		teclas_GPIOC &=0xE000;
+		switch ( teclas_GPIOC )
+			{
+				
+				case SW15 :		
+					buzzer(33);
+					break ;
+				
+				case SW16 :		
+					buzzer(33);
+					break ;
+				
+				case SW17 :		
+					buzzer(33);
+					break ;			
+				
+				default :
+					TIM3 -> CCER =0x0000 ; 
+					TIM3 -> CR1 = 0;
+					GPIOA -> ODR = 0x0000;
+					break ;
+
+			}
+			
+			// LCD
+			//atualiza_ldc();
 	
 	}
 }
 
+
 void atualiza_ldc()
 {
-	lcd_command (0x02); // return to first line
+	lcd_command (0x01);
 	delay_ms (3);
-	lcd_data(2);
-
+	lcd_command (0x02); // go to first line
+	delay_ms (3);
+	lcd_print("teste "); // inserir variavel oitava
+	delay_ms (3);
+	
+	//lcd_command (0x02/*ver*/); // go to second line
+	//delay_ms (3);
+	//lcd_print("Dutty: "); // inserir dutty
+	//delay_ms (3);
 }
 
 void buzzer(uint16_t f)
 {
-					TIM3 -> CCER |=(1 <<8); // enable sound
-					TIM3 -> ARR = f;
-					TIM3 -> CR1 = 1;
-					delay_ms (100);
+	TIM3 -> CCER |=(1 <<8); // enable sound
+	TIM3 -> ARR = f;
+	TIM3 -> CR1 = 1;
+	delay_ms (100);
 }
 
 
