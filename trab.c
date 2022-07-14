@@ -51,20 +51,21 @@ void atualiza_ldc( void );
 	
 int main ()
 {
-	// Desabilita interface JTAG
-	AFIO -> MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE ;
-	
-	// Config iniciais Buzzer
-	RCC -> APB2ENR |= 0xFC ; /* enable GPIO clocks */
+
+  RCC -> APB2ENR |= 0xFC ; // Enable the clocks for GPIO ports
+  RCC -> APB2ENR |= RCC_APB2ENR_AFIOEN ;
 	RCC -> APB1ENR |= (1 <<1); /* enable TIM3 clock */
 	TIM3 -> CCR3 = 12;
 	TIM3 -> CCER &= ~(1 <<8); // disable TIM3
 	TIM3 -> CCMR2 = 0x0030 ; /* toggle channel 3 */
 	TIM3 -> PSC = 7200 -1;	
 	
-	// Config portas GPIO
-	GPIOA -> CRL = 0x43344333 ;
-  GPIOA -> CRH = 0x33333443 ;
+	// Desabilita inteface JTAG
+  AFIO -> MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE ;
+
+  // GPIO setup
+  GPIOA -> CRL = 0x43344333 ; // LCD pins as outputs
+  GPIOA -> CRH = 0x33333443 ; // and other pins as inputs
 	GPIOB -> CRL = 0x4444442B ;
   GPIOB -> CRH = 0x44444444 ;
 	GPIOC -> CRL = 0x44444444 ;
@@ -79,17 +80,20 @@ int main ()
 	// Inicia LCD 
 	lcd_init ();
 	delay_ms (100);
-	lcd_command (0x01);
-	delay_ms (3);
-	
+	lcd_command(0x0C); // Desliga cursor
+	lcd_command(0x80);
+	lcd_print("Oitava: 1");
+	lcd_command(0xC0);
+	lcd_print("Dutty: 25%");
 	
 	// Variaveis Globais
 	int oitava = 1;
+	int dutty = 25;
 	uint16_t teclas_GPIOA;
 	uint16_t teclas_GPIOB;
 	uint16_t teclas_GPIOC;
 	
-	atualiza_ldc();
+
 	// LOOP
 	while (1)
 	{
@@ -126,19 +130,44 @@ int main ()
 		switch ( teclas_GPIOB )
 			{
 				case SW1 :
-					oitava = 1;
-					// LCD
-					//atualiza_ldc();
+					if(oitava == 2)
+					{
+						oitava = 1;
+						lcd_command(0x80);
+						lcd_print("Oitava: 1");
+					}
 					break ;
 				
 				case SW2 :
-					oitava = 2;
-					// LCD
-					//atualiza_ldc();
+					if(oitava == 1)
+					{
+						oitava = 2;
+						lcd_command(0x80);
+						lcd_print("Oitava: 2");
+					}
 					break ;
 				
 				case SW3 :
-					buzzer(55);
+					if(dutty == 25)
+					{
+						dutty = 50;
+						lcd_command(0xC0);
+						lcd_print("Dutty: 25%");
+						delay_ms(800);
+					}else if (dutty == 50)
+					{
+						dutty = 75;
+						lcd_command(0xC0);
+						lcd_print("Dutty: 50%");
+						delay_ms(800);
+					}else if (dutty == 75)
+					{
+						dutty = 25;
+						lcd_command(0xC0);
+						lcd_print("Dutty: 75%");
+						delay_ms(800);
+					}
+					
 					break ;
 				
 				case SW4 :		
@@ -154,7 +183,7 @@ int main ()
 					break ;
 				
 				case SW7 :		
-										TIM3 -> CCER =0x0000 ; // desenable sound
+					TIM3 -> CCER =0x0000 ; // desenable sound
 					TIM3 -> CR1 = 0;
 					GPIOA -> ODR = 0x0000;
 					break ;
@@ -217,10 +246,6 @@ int main ()
 
 void atualiza_ldc()
 {
-	lcd_command (0x01);
-	delay_ms (3);
-	lcd_command (0x02); // go to first line
-	delay_ms (3);
 	lcd_print("teste "); // inserir variavel oitava
 	delay_ms (3);
 	
